@@ -6,8 +6,8 @@
 
 @layer base {
   :root {
-    /* Deep contemplative background */
-    --background: 228 67% 11%;
+    /* Deep blue contemplative background */
+    --background: 207 88% 35%;
     --foreground: 0 0% 100%;
 
     /* Container and boundaries */
@@ -117,9 +117,8 @@
   .bouncing-word {
     @apply absolute text-white font-light tracking-wide select-none pointer-events-none;
     font-size: clamp(24px, 5vw, 48px);
-    text-shadow: 0 0 20px hsl(var(--word-glow) / 0.6),
-                 0 0 40px hsl(var(--word-glow) / 0.4),
-                 0 0 60px hsl(var(--word-glow) / 0.2);
+    text-shadow: 0 0 12px hsl(var(--word-glow) / 0.4),
+                 0 0 24px hsl(var(--word-glow) / 0.2);
     transform: translate3d(0, 0, 0);
     will-change: transform;
   }
