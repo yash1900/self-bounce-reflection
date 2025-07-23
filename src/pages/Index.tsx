@@ -1,7 +1,7 @@
-import { AnalysisLanding } from '@/components/AnalysisLanding';
+import { BouncingWord } from '@/components/BouncingWord';
 
 const Index = () => {
-  return <AnalysisLanding />;
+  return <BouncingWord />;
 };
 
 export default Index;
