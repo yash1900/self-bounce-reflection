@@ -16,6 +16,17 @@ const WORD_POOL = [
   'limits', 'growth', 'truth', 'masks', 'core', 'essence'
 ];
 
+const COLOR_POOL = [
+  'hsl(0 0% 100%)',      // white
+  'hsl(45 100% 75%)',    // warm gold
+  'hsl(120 45% 70%)',    // soft green
+  'hsl(300 60% 80%)',    // light purple
+  'hsl(30 85% 75%)',     // coral
+  'hsl(180 55% 75%)',    // cyan
+  'hsl(60 80% 80%)',     // light yellow
+  'hsl(320 50% 85%)'     // pink
+];
+
 const SPEED = 100; // pixels per second
 const FPS = 60;
 
@@ -26,6 +37,7 @@ export const BouncingWord = () => {
   const lastTimeRef = useRef<number>(0);
   
   const [currentWord, setCurrentWord] = useState('self');
+  const [currentColor, setCurrentColor] = useState(COLOR_POOL[0]);
   const [position, setPosition] = useState<Position>({ x: 50, y: 50 });
   const [velocity, setVelocity] = useState<Velocity>({ x: 1, y: 1 });
   const [isMotionEnabled, setIsMotionEnabled] = useState(true);
@@ -85,11 +97,15 @@ export const BouncingWord = () => {
     };
   }, [currentWord]);
 
-  // Change word on collision
-  const changeWord = () => {
+  // Change word and color on collision
+  const changeWordAndColor = () => {
     const availableWords = WORD_POOL.filter(word => word !== currentWord);
     const newWord = availableWords[Math.floor(Math.random() * availableWords.length)];
     setCurrentWord(newWord);
+    
+    const availableColors = COLOR_POOL.filter(color => color !== currentColor);
+    const newColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+    setCurrentColor(newColor);
   };
 
   // Animation loop
@@ -137,7 +153,7 @@ export const BouncingWord = () => {
         
         if (collisionDetected) {
           setVelocity(newVelocity);
-          changeWord();
+          changeWordAndColor();
         }
         
         return newPosition;
@@ -181,7 +197,7 @@ export const BouncingWord = () => {
           {isMotionEnabled ? 'Motion On' : 'Motion Off'}
         </button>
         <button
-          onClick={changeWord}
+          onClick={changeWordAndColor}
           className="motion-toggle"
           aria-label="Change word"
         >
@@ -201,7 +217,9 @@ export const BouncingWord = () => {
           style={{
             transform: isMotionEnabled 
               ? `translate(${position.x}px, ${position.y}px)` 
-              : 'none'
+              : 'none',
+            color: currentColor,
+            textShadow: `0 0 12px ${currentColor}40, 0 0 24px ${currentColor}20`
           }}
           aria-live="polite"
           aria-label={`Current word: ${currentWord}`}
