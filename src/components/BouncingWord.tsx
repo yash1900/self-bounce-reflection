@@ -40,7 +40,6 @@ export const BouncingWord = () => {
   const [currentColor, setCurrentColor] = useState(COLOR_POOL[0]);
   const [position, setPosition] = useState<Position>({ x: 50, y: 50 });
   const [velocity, setVelocity] = useState<Velocity>({ x: 1, y: 1 });
-  const [isMotionEnabled, setIsMotionEnabled] = useState(true);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0, wordWidth: 0, wordHeight: 0 });
 
   // Initialize random starting position and velocity
@@ -110,7 +109,6 @@ export const BouncingWord = () => {
 
   // Animation loop
   useEffect(() => {
-    if (!isMotionEnabled) return;
 
     const animate = (currentTime: number) => {
       if (lastTimeRef.current === 0) {
@@ -171,43 +169,13 @@ export const BouncingWord = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isMotionEnabled, dimensions]);
-
-  // Check for motion preference
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setIsMotionEnabled(!mediaQuery.matches);
-    
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsMotionEnabled(!e.matches);
-    };
-    
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+  }, [dimensions]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
-      <div className="controls-container">
-        <button
-          onClick={() => setIsMotionEnabled(!isMotionEnabled)}
-          className={`motion-toggle ${isMotionEnabled ? 'active' : ''}`}
-          aria-label={isMotionEnabled ? 'Disable motion' : 'Enable motion'}
-        >
-          {isMotionEnabled ? 'Motion On' : 'Motion Off'}
-        </button>
-        <button
-          onClick={changeWordAndColor}
-          className="motion-toggle"
-          aria-label="Change word"
-        >
-          Change Word
-        </button>
-      </div>
-      
+    <div className="min-h-screen flex items-center justify-center p-8">
       <div 
         ref={containerRef}
-        className={`bouncing-container max-w-4xl w-full ${!isMotionEnabled ? 'motion-reduce' : ''}`}
+        className="bouncing-container max-w-4xl w-full"
         role="presentation"
         aria-label="Self-awareness visualization"
       >
@@ -215,9 +183,7 @@ export const BouncingWord = () => {
           ref={wordRef}
           className="bouncing-word"
           style={{
-            transform: isMotionEnabled 
-              ? `translate(${position.x}px, ${position.y}px)` 
-              : 'none',
+            transform: `translate(${position.x}px, ${position.y}px)`,
             color: currentColor,
             textShadow: `0 0 12px ${currentColor}40, 0 0 24px ${currentColor}20`
           }}
@@ -226,13 +192,6 @@ export const BouncingWord = () => {
         >
           {currentWord}
         </div>
-      </div>
-      
-      <div className="mt-8 text-center max-w-md">
-        <p className="text-white/60 text-sm leading-relaxed">
-          Watch as words of self-discovery bounce through the boundaries of awareness. 
-          Each collision sparks a new aspect of identity to explore.
-        </p>
       </div>
     </div>
   );
